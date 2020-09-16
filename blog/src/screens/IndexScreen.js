@@ -1,31 +1,56 @@
-import React, { useContext } from 'react'
-import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native'
-import { Context } from '../context/BlogContext'
-import { Feather } from '@expo/vector-icons'
+import React, { useContext } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Button,
+  TouchableOpacity,
+} from 'react-native';
+import { Context } from '../context/BlogContext';
+import { Feather } from '@expo/vector-icons';
 
 const IndexScreen = ({ navigation }) => {
-  const { state, addBlogPost, deleteBlogPost } = useContext(Context)
+  const { state, deleteBlogPost } = useContext(Context);
 
-  return <View>
-    <Button title="Add Post" onPress={addBlogPost}/>
-    <FlatList 
-      data={state}
-      keyExtractor={blogPosts => blogPosts.title}
-      renderItem={({ item }) => {
-      return (
-        <TouchableOpacity onPress={() => navigation.navigate('Show', {id: item.id })}>
-          <View style={styles.row}>
-            <Text style={styles.title}>{item.title}</Text>
-            <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
-              <Feather name="trash" style={styles.icon} />
+  return (
+    <View>
+      <FlatList
+        data={state}
+        keyExtractor={(blogPost) => blogPost.title}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Show', { id: item.id })}
+            >
+              <View style={styles.row}>
+                <Text style={styles.title}>
+                  {item.title} - {item.id}
+                </Text>
+                <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
+                  <Feather style={styles.icon} name="trash" />
+                </TouchableOpacity>
+              </View>
             </TouchableOpacity>
-          </View>
+          );
+        }}
+      />
+    </View>
+  );
+};
+
+IndexScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerRight: () => {
+      return (
+      <TouchableOpacity onPress={() => navigation.navigate('Create')}>
+        <Feather name="plus" size={30} style ={ {marginRight: 10} } />
       </TouchableOpacity>
       )
-      }}
-    />
-    </View>
-}
+    }
+  };
+};
+
 
 const styles = StyleSheet.create({
   row: {
@@ -34,14 +59,14 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     borderTopWidth: 1,
-    borderColor: 'gray'
+    borderColor: 'gray',
   },
   title: {
-    fontSize: 18
+    fontSize: 18,
   },
   icon: {
-    fontSize: 24
-  }
-})
+    fontSize: 24,
+  },
+});
 
-export default IndexScreen
+export default IndexScreen;
